@@ -1,20 +1,22 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import logo from '../assets/avenix-logo.png'
 
-function SplashScreen() {
+function SplashScreen({ onFinish }) {
   const [visible, setVisible] = useState(true)
-  const navigate = useNavigate()
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
       setVisible(false)
-      window.setTimeout(() => navigate('/'), 220)
+      // notify parent that splash finished so it can hide the SplashScreen
+      if (typeof onFinish === 'function') {
+        // small delay to allow exit animation to play
+        window.setTimeout(() => onFinish(), 220)
+      }
     }, 1800)
 
     return () => window.clearTimeout(timer)
-  }, [navigate])
+  }, [onFinish])
 
   return (
     <AnimatePresence>

@@ -4,6 +4,33 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import Button from './Button'
 import logo from '../assets/avenix-logo.png'
 
+function ThemeToggle() {
+  const [theme, setTheme] = useState(() => {
+    try {
+      return document.documentElement.getAttribute('data-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+    } catch (e) {
+      return 'dark'
+    }
+  })
+
+  useEffect(() => {
+    try {
+      document.documentElement.setAttribute('data-theme', theme)
+      localStorage.setItem('avenix_theme', theme)
+    } catch (e) {}
+  }, [theme])
+
+  return (
+    <button
+      className="theme-toggle"
+      aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+      onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
+    >
+      {theme === 'dark' ? '🌙' : '☀️'}
+    </button>
+  )
+}
+
 const links = [
   { to: '/', label: 'Home' },
   { to: '/docs', label: 'Documentation' },
@@ -92,6 +119,7 @@ function Navbar() {
           <Button href="https://pypi.org/project/avenix/" variant="secondary" external className="nav-pypi">
             View on PyPI
           </Button>
+          <ThemeToggle />
           <button type="button" className="menu-toggle" onClick={() => setMobileOpen((prev) => !prev)} aria-label="Toggle navigation menu" aria-expanded={mobileOpen}>
             <span />
             <span />
